@@ -1,0 +1,5 @@
+/* Global navigation styles */
+nav {
+  display: flex;
+  gap: 1rem;
+}
