@@ -6,8 +6,24 @@
 (function () {
   'use strict';
 
-  /* ── NAV HTML ── */
+  const VALID_PAGES = new Set(['home', 'about', 'services', 'contact']);
+  const SEARCH_INDEX = [
+    { title: 'Home', url: 'index.html', description: 'Overview of Sombreiro Shipping & Logistics.' },
+    { title: 'About Us', url: 'about.html', description: 'Company story, leadership, vision, and mission.' },
+    { title: 'Our Story', url: 'about.html#scroll-point', description: 'How the company was founded and what it stands for.' },
+    { title: 'Leadership', url: 'about.html#leadership', description: 'Meet the management team.' },
+    { title: 'Vision & Mission', url: 'about.html#vm', description: 'Our purpose and long-term direction.' },
+    { title: 'Services', url: 'services.html', description: 'Maritime services for Nigerian ports.' },
+    { title: 'Ship Agency', url: 'services.html#ship-agency', description: 'Full port agency support.' },
+    { title: 'Husbandry Services', url: 'services.html#husbandry', description: 'Crew, provisions, and launch services.' },
+    { title: 'Protective Agency', url: 'services.html#protective', description: 'Independent representation and cargo supervision.' },
+    { title: 'Contact', url: 'contact.html', description: 'Get in touch with the team.' },
+  ];
+
+  /* Build the shared header, popovers, and mobile drawer for the active page. */
   function buildNav(activePage) {
+    const safePage = VALID_PAGES.has(activePage) ? activePage : 'home';
+
     return `
     <!-- Utility bar -->
     <div class="util-bar">
@@ -36,21 +52,21 @@
         <ul class="nav-items" id="navItems">
 
           <li class="nav-item" data-popover="services">
-            <button class="nav-item-btn ${activePage === 'services' ? 'active' : ''}" aria-haspopup="true" aria-expanded="false">
+            <button class="nav-item-btn ${safePage === 'services' ? 'active' : ''}" aria-haspopup="true" aria-expanded="false">
               Services
               <span class="material-icons-outlined chevron">expand_more</span>
             </button>
           </li>
 
           <li class="nav-item" data-popover="about">
-            <button class="nav-item-btn ${activePage === 'about' ? 'active' : ''}" aria-haspopup="true" aria-expanded="false">
+            <button class="nav-item-btn ${safePage === 'about' ? 'active' : ''}" aria-haspopup="true" aria-expanded="false">
               About
               <span class="material-icons-outlined chevron">expand_more</span>
             </button>
           </li>
 
           <li class="nav-item">
-            <a href="index.html" class="nav-item-btn ${activePage === 'home' ? 'active' : ''}">Home</a>
+            <a href="index.html" class="nav-item-btn ${safePage === 'home' ? 'active' : ''}">Home</a>
           </li>
 
         </ul>
@@ -195,7 +211,7 @@
           <span class="material-icons-outlined chevron">expand_more</span>
         </button>
         <div class="mobile-nav-links" id="mob-services">
-          <a href="services.html#ship-agency" class="mobile-nav-link ${activePage === 'services' ? 'active' : ''}"><span class="mobile-nav-link-icon"><span class="material-icons-outlined service-icon">local_shipping</span></span> Ship Agency</a>
+          <a href="services.html#ship-agency" class="mobile-nav-link ${safePage === 'services' ? 'active' : ''}"><span class="mobile-nav-link-icon"><span class="material-icons-outlined service-icon">local_shipping</span></span> Ship Agency</a>
           <a href="services.html#husbandry" class="mobile-nav-link"><span class="mobile-nav-link-icon"><span class="material-icons-outlined service-icon">directions_boat</span></span> Husbandry Services</a>
           <a href="services.html#protective" class="mobile-nav-link"><span class="mobile-nav-link-icon"><span class="material-icons-outlined service-icon">shield</span></span> Protective Agency</a>
           <a href="services.html#spares" class="mobile-nav-link"><span class="mobile-nav-link-icon"><span class="material-icons-outlined service-icon">inventory_2</span></span> Ship Spares Logistics</a>
@@ -210,7 +226,7 @@
           <span class="material-icons-outlined chevron">expand_more</span>
         </button>
         <div class="mobile-nav-links" id="mob-about">
-          <a href="about.html" class="mobile-nav-link ${activePage === 'about' ? 'active' : ''}"><span class="mobile-nav-link-icon"><span class="material-icons-outlined">book</span></span> About Us</a>
+          <a href="about.html" class="mobile-nav-link ${safePage === 'about' ? 'active' : ''}"><span class="mobile-nav-link-icon"><span class="material-icons-outlined">book</span></span> About Us</a>
           <a href="about.html#scroll-point" class="mobile-nav-link"><span class="mobile-nav-link-icon"><span class="material-icons-outlined">flag</span></span> Our Story</a>
           <a href="about.html#leadership" class="mobile-nav-link"><span class="mobile-nav-link-icon"><span class="material-icons-outlined">groups</span></span> Leadership</a>
           <a href="about.html#vm" class="mobile-nav-link"><span class="mobile-nav-link-icon"><span class="material-icons-outlined">track_changes</span></span> Vision & Mission</a>
@@ -247,7 +263,7 @@
     `;
   }
 
-  /* ── INJECT ── */
+  /* Replace the nav placeholder with the shared header markup. */
   function injectNav() {
     const placeholder = document.getElementById('nav-placeholder');
     if (!placeholder) return;
@@ -256,7 +272,7 @@
     initNav();
   }
 
-  /* ── INIT INTERACTIONS ── */
+  /* Wire up popovers, mobile drawer toggles, and search interactions. */
   function initNav() {
     const siteNav   = document.getElementById('siteNav');
     const overlay   = document.getElementById('popoverOverlay');
@@ -372,7 +388,61 @@
     function closeSearch() {
       searchOverlay?.classList.remove('active');
       searchOverlay?.setAttribute('aria-hidden', 'true');
-      document.getElementById('siteSearchResults').innerHTML = '';
+      const results = document.getElementById('siteSearchResults');
+      if (results) {
+        results.textContent = '';
+      }
+    }
+
+    /* Render search matches from the site index into the overlay. */
+    function renderSearchResults(query) {
+      const results = document.getElementById('siteSearchResults');
+      if (!results) return;
+
+      const normalizedQuery = query.trim().toLowerCase();
+      results.textContent = '';
+
+      if (!normalizedQuery) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'search-result';
+        emptyState.textContent = 'Type a keyword to search the site.';
+        results.appendChild(emptyState);
+        return;
+      }
+
+      const matches = SEARCH_INDEX.filter(item => {
+        const haystack = `${item.title} ${item.description} ${item.url}`.toLowerCase();
+        return haystack.includes(normalizedQuery);
+      });
+
+      if (!matches.length) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'search-result';
+        emptyState.textContent = 'No matching pages found.';
+        results.appendChild(emptyState);
+        return;
+      }
+
+      matches.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'search-result';
+
+        const link = document.createElement('a');
+        link.href = item.url;
+        link.textContent = item.title;
+
+        const description = document.createElement('p');
+        description.textContent = item.description;
+
+        row.appendChild(link);
+        row.appendChild(description);
+        results.appendChild(row);
+      });
+    }
+
+    function runSearch() {
+      const input = document.getElementById('siteSearchInput');
+      renderSearchResults(input?.value || '');
     }
 
     searchToggle?.addEventListener('click', (e) => {
@@ -381,8 +451,17 @@
     });
 
     searchClose?.addEventListener('click', closeSearch);
+    document.getElementById('siteSearchBtn')?.addEventListener('click', runSearch);
+    document.getElementById('siteSearchInput')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runSearch();
+      }
+    });
     searchOverlay?.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
+
+    renderSearchResults('');
   }
 
   /* ── RUN ── */
