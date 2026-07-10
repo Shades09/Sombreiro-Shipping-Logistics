@@ -70,11 +70,16 @@
   background: rgba(255,255,255,0.04);
 }
 
-.util-item svg {
+.util-item svg,
+.util-item .material-icons-outlined.util-icon {
   width: 12px;
   height: 12px;
   flex-shrink: 0;
   opacity: 0.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
 }
 
 .util-item.util-cta {
@@ -198,11 +203,16 @@
   transform: scaleX(1);
 }
 
-.nav-item-btn .chevron {
+.nav-item-btn .chevron,
+.nav-item-btn .material-icons-outlined.chevron {
   width: 12px; height: 12px;
   transition: transform 0.25s;
   opacity: 0.5;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
 }
 
 .nav-item.open .nav-item-btn .chevron {
@@ -245,8 +255,13 @@
   background: rgba(26,92,42,0.04);
 }
 
-.nav-action-btn svg {
+.nav-action-btn svg,
+.nav-action-btn .material-icons-outlined {
   width: 16px; height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 }
 
 .nav-contact-btn {
@@ -269,6 +284,12 @@
 
 .nav-contact-btn:hover {
   background: var(--orange);
+}
+
+/* contact arrow (small icon inside button) */
+.nav-contact-btn .contact-arrow {
+  font-size: 14px;
+  line-height: 1;
 }
 
 /* ── GLASSMORPHISM MEGA-MENU POPOVER ── */

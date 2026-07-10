@@ -1297,7 +1297,7 @@ select:focus {
     }
     .leader-card { text-align: center; }
     .leader-photo {
-      width: 100%; aspect-ratio: 1;
+      width: 100%; aspect-ratio: 4 / 5;
       border-radius: 8px; overflow: hidden;
       background: var(--light);
       margin-bottom: 1rem;
@@ -1312,6 +1312,7 @@ select:focus {
     .leader-image {
       width: 100%; height: 100%;
       object-fit: cover;
+      object-position: center top;
       display: block;
     }
     .leader-name {
