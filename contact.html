@@ -71,18 +71,15 @@
       </p>
 
       <!--
-        FORMSPREE SETUP:
-        1. Go to https://formspree.io and create a free account
-        2. Create a new form — you will get a unique endpoint like:
-           https://formspree.io/f/xyzabcde
-        3. Replace YOUR_FORMSPREE_ID below with your actual form ID
-        4. Formspree will send all submissions directly to your email
+        This form uses a local mailto fallback so it works without a backend.
+        Submissions open a prefilled email to info@sombreiroshipping.com.
       -->
       <form
         class="contact-form"
         id="contactForm"
-        action="https://formspree.io/f/YOUR_FORMSPREE_ID"
+        action="mailto:info@sombreiroshipping.com"
         method="POST"
+        enctype="text/plain"
       >
 
         <div class="form-row">
@@ -345,40 +342,70 @@
 
   <script>
     // Nav handled by nav.js
-            // Form submission via fetch (AJAX — no page reload)
+    // Contact form opens a prefilled email so submissions work without a backend.
     const form = document.getElementById('contactForm');
     const statusEl = document.getElementById('formStatus');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
+    const newsletterForm = document.getElementById('newsletterForm');
+    const newsletterStatus = document.getElementById('newsletterStatus');
+
+    function buildMailtoBody(formElement) {
+      const data = new FormData(formElement);
+      const firstName = (data.get('firstName') || '').toString().trim();
+      const lastName = (data.get('lastName') || '').toString().trim();
+      const company = (data.get('company') || '').toString().trim();
+      const role = (data.get('role') || '').toString().trim();
+      const email = (data.get('email') || '').toString().trim();
+      const phone = (data.get('phone') || '').toString().trim();
+      const service = (data.get('service') || '').toString().trim();
+      const port = (data.get('port') || '').toString().trim();
+      const vessel = (data.get('vessel') || '').toString().trim();
+      const message = (data.get('message') || '').toString().trim();
+
+      return [
+        `Name: ${firstName} ${lastName}`,
+        `Company / Organisation: ${company}`,
+        role ? `Role: ${role}` : null,
+        `Email: ${email}`,
+        phone ? `Phone / WhatsApp: ${phone}` : null,
+        `Service Required: ${service}`,
+        port ? `Port / Location: ${port}` : null,
+        vessel ? `Vessel: ${vessel}` : null,
+        '',
+        'Enquiry / Details:',
+        message,
+      ].filter(Boolean).join('\n');
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      submitBtn.disabled = true;
-      btnText.textContent = 'Sending...';
+      const mailtoUrl = `mailto:info@sombreiroshipping.com?subject=${encodeURIComponent('Website enquiry from Sombreiro contact form')}&body=${encodeURIComponent(buildMailtoBody(form))}`;
+
       statusEl.className = 'form-status';
-      statusEl.style.display = 'none';
+      statusEl.textContent = 'Your email app should open with the enquiry prefilled. If it does not, email info@sombreiroshipping.com directly.';
+      statusEl.style.display = 'block';
 
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
-        });
+      window.location.href = mailtoUrl;
+    });
 
-        if (res.ok) {
-          statusEl.className = 'form-status success';
-          statusEl.textContent = '✓ Your enquiry has been sent. Our team will respond shortly.';
-          form.reset();
-        } else {
-          throw new Error('Server error');
-        }
-      } catch {
-        statusEl.className = 'form-status error';
-        statusEl.textContent = 'Something went wrong. Please email us directly at info@sombreiroshipping.com';
+    // Newsletter saves locally when no backend is configured.
+    newsletterForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletterEmail');
+      const email = emailInput?.value.trim();
+      if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        if (newsletterStatus) newsletterStatus.textContent = 'Please enter a valid email address.';
+        return;
       }
 
-      submitBtn.disabled = false;
-      btnText.textContent = 'Send Enquiry';
+      const key = 'newsletterSubscribers_v1';
+      const current = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!current.includes(email)) current.push(email);
+      localStorage.setItem(key, JSON.stringify(current));
+
+      if (newsletterStatus) newsletterStatus.textContent = 'Subscribed locally. Replace the form action when a backend is available.';
+      newsletterForm.reset();
     });
 
     // Fade in
