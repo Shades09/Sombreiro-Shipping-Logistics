@@ -27,47 +27,91 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined&display=block" rel="stylesheet" />
   <style>
     body.services-page .page-hero {
-      background:
-        radial-gradient(circle at top right, rgba(217,78,15,0.18), transparent 28%),
-        radial-gradient(circle at 18% 72%, rgba(201,148,58,0.12), transparent 26%),
-        linear-gradient(135deg, #101010 0%, #1a1a1a 58%, #0f0f0f 100%);
+      background: linear-gradient(180deg, #171717 0%, #111111 100%);
     }
 
     body.services-page .page-hero-inner {
       display: grid;
-      grid-template-columns: minmax(260px, 0.95fr) minmax(320px, 1.05fr);
-      gap: clamp(2rem, 5vw, 5rem);
+      grid-template-columns: minmax(0, 1.25fr) minmax(240px, 0.75fr);
       align-items: end;
+      gap: clamp(2rem, 4vw, 4rem);
       position: relative;
-      padding: 5.75rem 2rem 5rem;
+      padding: 4.25rem 2rem 4rem;
+      min-height: 500px;
     }
 
-    body.services-page .page-hero-inner::before {
-      content: '';
-      position: absolute;
-      right: 2rem;
-      top: 2rem;
-      width: min(360px, 34vw);
-      height: 220px;
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(217,78,15,0.14), rgba(26,92,42,0.08));
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.22);
-      pointer-events: none;
+    body.services-page .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 100%;
+      padding-top: 1.5rem;
     }
 
-    body.services-page .page-hero h1 {
-      max-width: 8ch;
-      font-size: clamp(3rem, 5vw, 4.7rem);
-      line-height: 0.98;
-      margin-bottom: 0;
-      letter-spacing: -0.03em;
+    body.services-page .breadcrumb {
+      margin-bottom: 3.5rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 600;
     }
 
     body.services-page .page-hero-desc {
-      max-width: 34rem;
-      font-size: 1.03rem;
-      color: rgba(255,255,255,0.72);
+      max-width: 35rem;
+      margin: 0;
+      font-size: clamp(1.12rem, 1.7vw, 2rem);
+      line-height: 1.42;
+      color: rgba(255,255,255,0.76);
+      font-weight: 400;
+    }
+
+    body.services-page .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      min-height: 280px;
+      padding-bottom: 0.5rem;
+    }
+
+    body.services-page .hero-visual::before {
+      content: '';
+      position: absolute;
+      inset: 8% 12% 0 0;
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    body.services-page .services-wordmark {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.15rem;
+      padding-left: 1.25rem;
+    }
+
+    body.services-page .word-our,
+    body.services-page .word-services {
+      display: block;
+      font-family: "Sora", "DM Sans", sans-serif;
+      letter-spacing: -0.07em;
+      line-height: 0.9;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    body.services-page .word-our {
+      color: rgba(255,255,255,0.95);
+      font-size: clamp(2.8rem, 5vw, 5rem);
+    }
+
+    body.services-page .word-services {
+      color: #dc6d2b;
+      font-size: clamp(3.2rem, 5.6vw, 5.8rem);
     }
 
     body.services-page .service-tabs-wrap {
@@ -221,12 +265,29 @@
 
     @media (max-width: 767px) {
       body.services-page .page-hero-inner {
-        padding: 3.6rem 1.25rem 3rem;
+        grid-template-columns: 1fr;
+        padding: 3.6rem 1.25rem 2.5rem;
+        min-height: auto;
       }
 
-      body.services-page .page-hero h1 {
-        max-width: none;
-        font-size: clamp(2.6rem, 11vw, 3.4rem);
+      body.services-page .hero-copy {
+        padding-top: 0;
+      }
+
+      body.services-page .breadcrumb {
+        margin-bottom: 2rem;
+      }
+
+      body.services-page .page-hero-desc {
+        font-size: 1.05rem;
+      }
+
+      body.services-page .hero-visual {
+        min-height: 240px;
+      }
+
+      body.services-page .services-wordmark {
+        transform: none;
       }
 
       body.services-page .service-tabs {
@@ -266,15 +327,23 @@
   <!-- ── PAGE HERO ── -->
   <section class="page-hero">
     <div class="page-hero-inner fade-in">
-      <div class="breadcrumb">
-        <a href="index.html">Home</a>
-        <span>/</span>
-        <span class="text-muted">Services</span>
+      <div class="hero-copy">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <span>/</span>
+          <span class="text-muted">Services</span>
+        </div>
+        <p class="page-hero-desc">
+          Six specialist maritime service lines delivered with local precision and international standards covering all major Nigerian ports and oil &amp; gas terminals.
+        </p>
       </div>
-      <h1>Our <em>Services</em></h1>
-      <p class="page-hero-desc">
-        Six specialist maritime service lines delivered with local precision and international standards  covering all major Nigerian ports and oil & gas terminals.
-      </p>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="services-wordmark">
+          <span class="word-our">Our</span>
+          <span class="word-services">Services</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -747,7 +816,9 @@
             <li><a href="mailto:info@sombreiroshipping.com">info@sombreiroshipping.com</a></li>
             <li><a href="tel:+2348077146449">+234 807 714 6449</a></li>
             <li><a href="tel:+2348054035070">+234 805 403 5070</a></li>
-            <li>Office Address: 7 April Hospital Close, Off NTA/Ozuoba Road, Port Harcourt, Rivers State</li>
+            <li>Primary Office: 7 April Hospital Close, Off NTA/Ozuoba Road, Port Harcourt, Rivers State</li>
+            <li>Secondary Offices: Lagos Office - 26A Hindera Rd, Apapa GRA, Apapa, Lagos State, Nigeria</li>
+            <li>Bonny Office - New Road, Opposite Dolfin Hotels, Bonny, Rivers State, Nigeria</li>
           </ul>
         </div>
       </div>
