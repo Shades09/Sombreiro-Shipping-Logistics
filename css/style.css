@@ -1033,6 +1033,11 @@ select:focus {
     }
 
     .footer-col ul li a:hover { color: var(--orange); }
+
+    .address-label {
+      color: var(--orange);
+      font-weight: 700;
+    }
     
     /* Social icons in footer */
     .footer-socials { display: flex; align-items: center; gap: 1rem; }
